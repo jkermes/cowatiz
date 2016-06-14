@@ -4,4 +4,13 @@ angular.module('starter.services', ['firebase'])
         var ref = firebase.database().ref().child('journeys');
 
         return $firebaseArray(ref);
-    });
+    })
+    .factory('Users', function ($firebaseArray) {
+        var database = firebase.database();
+        var ref = firebase.database().ref().child('users');
+
+        return $firebaseArray(ref);
+    })
+    .factory("Auth", function($firebaseAuth) {
+	    return $firebaseAuth();
+	});

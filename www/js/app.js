@@ -66,6 +66,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  .state('tab.journey-add', {
+    url: '/addJourney',
+    views: {
+      'tab-journeys': {
+        templateUrl: 'templates/journey-add.html',
+        controller: 'AddJourneyCtrl'
+      }
+    }
+  })
   .state('tab.account', {
     url: '/account',
     views: {
