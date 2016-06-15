@@ -2,8 +2,10 @@ angular.module('starter.controllers', ['firebase', 'ngAutocomplete'])
 .controller('LoginCtrl', function ($scope) {
 
 })
-.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users) {
+.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users, Test) {
     $scope.auth = Auth;
+    //$scope.journeys = Test.get();
+    //console.log(Test.get());
 
     $scope.auth.$onAuthStateChanged(function(firebaseUser) {
       $scope.firebaseUser = firebaseUser;
@@ -23,8 +25,12 @@ angular.module('starter.controllers', ['firebase', 'ngAutocomplete'])
    
    $scope.loadResults = function() {
         if ($scope.result.fromCity && $scope.result.toCity) {
-            console.log('from: ' + $scope.result.fromCity);
-            console.log('from: ' + $scope.result.toCity);
+            //console.log('from: ' + $scope.result.fromCity);
+            //console.log('from: ' + $scope.result.toCity);
+            $scope.journeys = [];
+
+            $scope.journeys = Test.byCities($scope.result.fromCity, $scope.result.toCity);
+            console.log($scope.journeys);
         }
    }
 }

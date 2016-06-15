@@ -3,23 +3,26 @@
     <div class="list list-inset">
 	  <label class="item item-input">
 	    <i class="icon ion-search placeholder-icon"></i>
-	    <input type="text" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options" ng-change="loadResults(result)">
+	    <input type="text" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options">
 	  </label>
 	</div>
 	<div class="list list-inset">
 	  <label class="item item-input">
 	    <i class="icon ion-search placeholder-icon"></i>
-	    <input type="text" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options" ng-change="loadResults(result)">
+	    <input type="text" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options">
 	  </label>
 	</div>
-    <div class="card" ng-click="">
+    <div class="card" ng-repeat="journey in journeys">
 	    <div class="item item-divider">
-	    	Paris > Nevers
+	    	{{journey.fromCity}} > {{journey.toCity}}
 	    </div>
     	<div class="item item-text-wrap">
 		    <h3>Proposé par <strong>Fabrice Durand</strong></h3>
 		    <p>Le <strong>16/06/2016</strong></p>
 		</div>
     </div>
+    <button class="button button-block button-positive" ng-click="loadResults(result)">
+		Rechercher
+	</button>
   </ion-content>
 </ion-view>
