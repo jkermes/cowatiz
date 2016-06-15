@@ -1,19 +1,15 @@
 <ion-view view-title="Travel">
   <ion-content class="padding">
-<!--    <h2>Welcome to Cowatiz</h2>
-    <p>
-        Find your way!
-    </p>-->
     <div class="list list-inset">
 	  <label class="item item-input">
 	    <i class="icon ion-search placeholder-icon"></i>
-	    <input type="text" placeholder="Départ">
+	    <input type="text" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options" ng-change="loadResults(result)">
 	  </label>
 	</div>
 	<div class="list list-inset">
 	  <label class="item item-input">
 	    <i class="icon ion-search placeholder-icon"></i>
-	    <input type="text" placeholder="Arrivée">
+	    <input type="text" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options" ng-change="loadResults(result)">
 	  </label>
 	</div>
 	<div class="marginLeftSearch">

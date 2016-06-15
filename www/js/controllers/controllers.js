@@ -1,4 +1,5 @@
-angular.module('starter.controllers', ['firebase', 'ionic-datepicker'])
+
+angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutocomplete'])
 .controller('LoginCtrl', function ($scope) {
 
 })
@@ -10,10 +11,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker'])
     });
 
     function writeUserData(userId, name, email) {
-      firebase.database().ref('users/' + userId).set({
-        username: name,
-        email: email
-      });
 
     var dpOptions = {
         callback: function (val) {
@@ -28,6 +25,19 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker'])
     $scope.openDatePicker = function () {
         ionicDatePicker.openDatePicker(dpOptions);
     }
+
+    $scope.result = {};
+    $scope.options = {
+      country: 'fr',
+      types: '(cities)'
+    };    
+   
+   $scope.loadResults = function() {
+        if ($scope.result.fromCity && $scope.result.toCity) {
+            console.log('from: ' + $scope.result.fromCity);
+            console.log('from: ' + $scope.result.toCity);
+        }
+   }
 }
 
     $scope.signIn = function() {
