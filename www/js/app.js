@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.auth'])
+angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.auth', 'ionic-datepicker'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -87,5 +87,37 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/travel');
-});
+})
+
+  .config(function (ionicDatePickerProvider) {
+
+    var currentDate = new Date();
+
+    var datePickerObj = {
+      setLabel: 'Ok',
+      todayLabel: "Auj.",
+      closeLabel: 'x',
+      mondayFirst: true,
+      weeksList: ["D", "L", "Ma", "Me", "J", "V", "S"],
+      monthsList: ["Janv.", "Fév.", "Mars", "Avr.", "Mai", "Juin", "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc."],
+      templateType: 'popup',
+      from: currentDate,
+      to: new Date(currentDate.getFullYear() + 2, currentDate.getMonth(), currentDate.getDate()),
+      showTodayButton: true,
+      dateFormat: 'dd MMMM yyyy',
+      closeOnSelect: false,
+      disableWeekdays: []
+    };
+    ionicDatePickerProvider.configDatePicker(datePickerObj);
+  });
+
+angular.module('ionicDatePicker', ['ionic', 'ionic-datepicker'])
+  .config(function (ionicTimePickerProvider) {
+    var timePickerObj = {
+      format: 24,
+      setLabel: 'Définir',
+      closeLabel: 'Fermer'
+    };
+    ionicTimePickerProvider.configTimePicker(timePickerObj);
+  });
 

@@ -1,8 +1,8 @@
-angular.module('starter.controllers', ['firebase'])
+angular.module('starter.controllers', ['firebase', 'ionic-datepicker'])
 .controller('LoginCtrl', function ($scope) {
 
 })
-.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users) {
+.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users, ionicDatePicker) {
     $scope.auth = Auth;
 
     $scope.auth.$onAuthStateChanged(function(firebaseUser) {
@@ -10,17 +10,31 @@ angular.module('starter.controllers', ['firebase'])
     });
 
     function writeUserData(userId, name, email) {
-  firebase.database().ref('users/' + userId).set({
-    username: name,
-    email: email
-  });
+      firebase.database().ref('users/' + userId).set({
+        username: name,
+        email: email
+      });
+
+    var dpOptions = {
+        callback: function (val) {
+            var date = new Date(val);
+            $scope.startDate = date;
+            $scope.startDateString = ("0"+(date.getDate())).slice(-2)
+                +"/"+("0"+(date.getMonth()+1)).slice(-2)
+                +"/"+date.getFullYear();
+        }
+    }
+
+    $scope.openDatePicker = function () {
+        ionicDatePicker.openDatePicker(dpOptions);
+    }
 }
 
     $scope.signIn = function() {
       $scope.firebaseUser = null;
       $scope.error = null;
 
-      $scope.auth.$signInWithEmailAndPassword("", "").then(function(firebaseUser) {
+      $scope.auth.$signInWithEmailAndPassword("jukedroid@gmail.com", "plopplop").then(function(firebaseUser) {
         window.localStorage['user'] = {
             uid: firebaseUser.uid,
             email: firebaseUser.email

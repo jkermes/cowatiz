@@ -16,7 +16,18 @@
 	    <input type="text" placeholder="Arrivée">
 	  </label>
 	</div>
-    <div class="card" ng-click="#/tab/journeys/{{journey.$id}}">
+	<div class="marginLeftSearch">
+                <label class="item item-input">
+                    <i class="inlineD icon ion-calendar placeholder-icon"></i>
+                    <input ng-model="startDateString" class="inlineD allerret" ng-required="true" type="text" ng-click="openDatePicker()" placeholder="Start date">
+                </label>
+                <label class="item item-input">
+                    <i class="inlineD icon ion-clock placeholder-icon"></i>
+                    <input ng-model="announces.StartHour" class="inlineD allerret" ng-required="true" type="text" ng-click="openTimePicker()" placeholder="Hour">
+                </label>
+            </div>
+	</div>
+    <div class="card">
 	    <div class="item item-divider">
 	    	Paris > Nevers
 	    </div>
