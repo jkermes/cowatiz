@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.auth', 'ionic-datepicker'])
+angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.auth', 'ionic-datepicker', 'ionic-timepicker'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -109,14 +109,14 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
       disableWeekdays: []
     };
     ionicDatePickerProvider.configDatePicker(datePickerObj);
-  });
+  })
 
-angular.module('ionicDatePicker', ['ionic', 'ionic-datepicker'])
   .config(function (ionicTimePickerProvider) {
     var timePickerObj = {
+      inputTime: (new Date()).getHours() * 60 * 60,
       format: 24,
-      setLabel: 'Définir',
-      closeLabel: 'Fermer'
+      setLabel: 'Ok',
+      closeLabel: 'x'
     };
     ionicTimePickerProvider.configTimePicker(timePickerObj);
   });

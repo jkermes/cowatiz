@@ -3,7 +3,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 .controller('LoginCtrl', function ($scope) {
 
 })
-.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users, ionicDatePicker) {
+.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
     $scope.auth = Auth;
 
     $scope.auth.$onAuthStateChanged(function(firebaseUser) {
@@ -11,20 +11,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
     });
 
     function writeUserData(userId, name, email) {
-
-    var dpOptions = {
-        callback: function (val) {
-            var date = new Date(val);
-            $scope.startDate = date;
-            $scope.startDateString = ("0"+(date.getDate())).slice(-2)
-                +"/"+("0"+(date.getMonth()+1)).slice(-2)
-                +"/"+date.getFullYear();
-        }
-    }
-
-    $scope.openDatePicker = function () {
-        ionicDatePicker.openDatePicker(dpOptions);
-    }
 
     $scope.result = {};
     $scope.options = {
@@ -56,6 +42,35 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
     }).catch(function(error) {
       console.error("Authentication failed:", error);
   });
+
+    var dpOptions = {
+        callback: function (val) {
+            var date = new Date(val);
+            $scope.startDate = date;
+            $scope.startDateString =
+                ("0"+(date.getDate())).slice(-2)
+                +"/"+("0"+(date.getMonth()+1)).slice(-2)
+                +"/"+date.getFullYear();
+        }
+    }
+
+    var tpOptions = {
+        callback: function (val) {
+            var date = new Date(val * 1000);
+            $scope.startTime = date;
+            $scope.startTimeString =
+                ("0"+date.getUTCHours()).slice(-2)+":"
+                +("0"+date.getUTCMinutes()).slice(-2);
+            }
+    }
+
+    $scope.openDatePicker = function () {
+        ionicDatePicker.openDatePicker(dpOptions);
+    }
+
+    $scope.openTimePicker = function () {
+        ionicTimePicker.openTimePicker(tpOptions);
+    }
 };
 
 if (!$scope.firebaseUser) {
