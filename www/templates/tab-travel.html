@@ -4,13 +4,13 @@
 			<div class="list list-inset">
 				<label class="item item-input">
 					<i class="icon ion-ios-location-outline placeholder-icon"></i>
-					<input type="text" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options" ng-change="loadResults(result)">
+					<input type="text" ng-focus="disableTap()" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options" ng-change="loadResults(result)">
 				</label>
 			</div>
 			<div class="list list-inset">
 				<label class="item item-input">
 					<i class="icon ion-ios-location placeholder-icon"></i>
-					<input type="text" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options" ng-change="loadResults(result)">
+					<input type="text" ng-focus="disableTap()" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options" ng-change="loadResults(result)">
 				</label>
 			</div>
 			<label class="item item-input">

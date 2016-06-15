@@ -75,12 +75,12 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
       }
     }
   })
-  .state('tab.account', {
-    url: '/account',
+  .state('tab.profil', {
+    url: '/profil',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-profil': {
+        templateUrl: 'templates/tab-profil.html',
+        controller: 'ProfilCtrl'
       }
     }
   });
@@ -96,7 +96,7 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
     var datePickerObj = {
       setLabel: 'Ok',
       todayLabel: "Auj.",
-      closeLabel: 'x',
+      closeLabel: '×',
       mondayFirst: true,
       weeksList: ["D", "L", "Ma", "Me", "J", "V", "S"],
       monthsList: ["Janv.", "Fév.", "Mars", "Avr.", "Mai", "Juin", "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc."],
@@ -116,7 +116,7 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
       inputTime: (new Date()).getHours() * 60 * 60,
       format: 24,
       setLabel: 'Ok',
-      closeLabel: 'x'
+      closeLabel: '×'
     };
     ionicTimePickerProvider.configTimePicker(timePickerObj);
   });
