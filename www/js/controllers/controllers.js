@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['firebase'])
+angular.module('starter.controllers', ['firebase', 'ngAutocomplete'])
 .controller('LoginCtrl', function ($scope) {
 
 })
@@ -14,13 +14,26 @@ angular.module('starter.controllers', ['firebase'])
     username: name,
     email: email
   });
+
+    $scope.result = {};
+    $scope.options = {
+      country: 'fr',
+      types: '(cities)'
+    };    
+   
+   $scope.loadResults = function() {
+        if ($scope.result.fromCity && $scope.result.toCity) {
+            console.log('from: ' + $scope.result.fromCity);
+            console.log('from: ' + $scope.result.toCity);
+        }
+   }
 }
 
     $scope.signIn = function() {
       $scope.firebaseUser = null;
       $scope.error = null;
 
-      $scope.auth.$signInWithEmailAndPassword("", "").then(function(firebaseUser) {
+      $scope.auth.$signInWithEmailAndPassword("dev@fakemail.com", "password").then(function(firebaseUser) {
         window.localStorage['user'] = {
             uid: firebaseUser.uid,
             email: firebaseUser.email
