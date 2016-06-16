@@ -1,9 +1,21 @@
 
 angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutocomplete'])
-.controller('LoginCtrl', function ($scope) {
+.controller('LoginCtrl', function ($scope, $localStorage, $state, $ionicPopup, LoginService, Users) {
+    $scope.user = {};
 
+    $scope.login = function() {
+        LoginService.loginUser($scope.user.email, $scope.user.password).success(function(user) {
+            $state.go('tab.travel');
+            $localStorage.user = user;
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Login failed!',
+                template: 'Please check your credentials!'
+            });
+        });
+    }
 })
-.controller('TravelCtrl', function ($scope, Auth, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
+.controller('TravelCtrl', function ($scope, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
 
     $scope.disableTap = function(){
         container = document.getElementsByClassName('pac-container');
@@ -14,12 +26,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             document.getElementById('searchBar').blur();
         });
     };
-
-    $scope.auth = Auth;
-
-    $scope.auth.$onAuthStateChanged(function(firebaseUser) {
-      $scope.firebaseUser = firebaseUser;
-  });
 
     $scope.result = {};
     $scope.options = {
@@ -34,23 +40,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
     }
 };
 
-$scope.signIn = function() {
-  $scope.firebaseUser = null;
-  $scope.error = null;
-
-  $scope.auth.$signInWithEmailAndPassword("jukedroid@gmail.com", "plopplop").then(function(firebaseUser) {
-    $localStorage.user = {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email
-    };
-
-    if (!Users.$getRecord(firebaseUser.uid)) {
-        writeUserData(firebaseUser.uid, '', firebaseUser.email);
-    }
-}).catch(function(error) {
-  console.error("Authentication failed:", error);
-});
-
 var dpOptions = {
     callback: function (val) {
         var date = new Date(val);
@@ -60,7 +49,7 @@ var dpOptions = {
         +"/"+("0"+(date.getMonth()+1)).slice(-2)
         +"/"+date.getFullYear();
     }
-}
+};
 
 var tpOptions = {
     callback: function (val) {
@@ -70,20 +59,15 @@ var tpOptions = {
         ("0"+date.getUTCHours()).slice(-2)+":"
         +("0"+date.getUTCMinutes()).slice(-2);
     }
-}
+};
 
 $scope.openDatePicker = function () {
     ionicDatePicker.openDatePicker(dpOptions);
-}
+};
 
 $scope.openTimePicker = function () {
     ionicTimePicker.openTimePicker(tpOptions);
-}
 };
-
-if (!$scope.firebaseUser) {
-    $scope.signIn();    
-}
 })
 .controller("JourneysCtrl", function ($scope, $firebaseArray, $localStorage, Journeys) {
     $scope.journeys = Journeys;

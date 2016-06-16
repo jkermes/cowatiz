@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.auth', 'ionic-datepicker', 'ionic-timepicker'])
+angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.login', 'ionic-datepicker', 'ionic-timepicker'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -30,6 +30,12 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
+  // Login
+  .state('login', {
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'LoginCtrl'
+  })
 
   // setup an abstract state for the tabs directive
   .state('tab', {
@@ -86,7 +92,7 @@ angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/travel');
+  $urlRouterProvider.otherwise('login');
 })
 
   .config(function (ionicDatePickerProvider) {
