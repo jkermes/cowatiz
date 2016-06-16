@@ -131,7 +131,9 @@ $scope.openTimePicker = function () {
         $state.go('login');
     }
 
-    console.log(Storage.test());
+    Storage.getUserImage().success(function(data) {
+        $scope.image = data;
+    });
 
     $scope.settings = {
         enableFriends: false

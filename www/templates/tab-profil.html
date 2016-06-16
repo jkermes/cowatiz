@@ -3,13 +3,13 @@
 <div class="list card">
 <button class="button" ng-click="logout()">Logout</button>
   <div class="item item-avatar">
-    <img ng-src="img/adam.jpg"/>
+    <img ng-src="{{image}}"/>
     <h2>{{user.email}}</h2>
     <p>November 05, 1955</p>
   </div>
 
   <div class="item item-body">
-    <img class="full-image" src="img/perry.png">
+    <img class="full-image" ng-src="{{image}}">
     <p>
       This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
       the content is from a card-body consisting of an image and paragraph text. The footer
