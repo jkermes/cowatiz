@@ -11,10 +11,20 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         $state.go('tab.travel');
     }
 
-    $scope.login = function() {
+    function writeUserData(userId, name, email) {
+      firebase.database().ref('users/' + userId).set({
+        username: name,
+        email: email
+    })}
+
+      $scope.login = function() {
         LoginService.loginUser($scope.user.email, $scope.user.password).success(function(user) {
             redirectToTravel();
             $localStorage.user = user;
+
+            if (!Users.$getRecord(user.uid)) {
+                writeUserData(user.uid, '', user.email);
+            }
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
                 title: 'Login failed!',
@@ -112,7 +122,7 @@ $scope.openTimePicker = function () {
     $scope.journey = [];
 })
 
-.controller('ProfilCtrl', function ($scope, $localStorage, $state, Users, LoginService) {    
+.controller('ProfilCtrl', function ($scope, $localStorage, $state, Users, LoginService, Storage) {    
     $scope.user = Users.$getRecord($localStorage.user.uid);
 
     $scope.logout = function () {
@@ -120,6 +130,8 @@ $scope.openTimePicker = function () {
         $localStorage.user = null;
         $state.go('login');
     }
+
+    console.log(Storage.test());
 
     $scope.settings = {
         enableFriends: false
