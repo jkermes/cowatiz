@@ -1,8 +1,9 @@
 angular.module('starter.services.login', ['firebase'])
 .service('LoginService', function($firebaseAuth, $q) {
+	var auth = $firebaseAuth();
+
 	return {
 		loginUser: function(name, pw) {
-			var auth = $firebaseAuth();
 			var deferred = $q.defer();
 			var promise = deferred.promise;
 
@@ -27,6 +28,9 @@ angular.module('starter.services.login', ['firebase'])
 			}
 
 			return promise;
+		},
+		logout: function() {
+			auth.$signOut();
 		}
 	}
 });

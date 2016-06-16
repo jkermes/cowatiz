@@ -3,9 +3,17 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 .controller('LoginCtrl', function ($scope, $localStorage, $state, $ionicPopup, LoginService, Users) {
     $scope.user = {};
 
+    if ($localStorage.user) {
+        redirectToTravel();
+    }
+
+    function redirectToTravel() {
+        $state.go('tab.travel');
+    }
+
     $scope.login = function() {
         LoginService.loginUser($scope.user.email, $scope.user.password).success(function(user) {
-            $state.go('tab.travel');
+            redirectToTravel();
             $localStorage.user = user;
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
@@ -90,10 +98,14 @@ $scope.openTimePicker = function () {
     $scope.journey = [];
 })
 
-.controller('ProfilCtrl', function ($scope, $localStorage, Users) {    
-    $scope.user = Users.$getRecord("PoZjT54RAMNft1Bgsn7fAx0ggHG3");
+.controller('ProfilCtrl', function ($scope, $localStorage, $state, Users, LoginService) {    
+    $scope.user = Users.$getRecord($localStorage.user.uid);
 
-    console.log($localStorage.user.uid);
+    $scope.logout = function () {
+        LoginService.logout();
+        $localStorage.user = null;
+        $state.go('login');
+    }
 
     $scope.settings = {
         enableFriends: false
