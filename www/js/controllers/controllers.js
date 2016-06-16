@@ -22,6 +22,20 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             });
         });
     }
+
+    $scope.register = function() {
+        LoginService.register($scope.user.email, $scope.user.password).success(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Account created!',
+                template: 'You can now login'
+            });
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Register failed!',
+                template: data
+            });
+        });
+    }
 })
 .controller('TravelCtrl', function ($scope, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
 

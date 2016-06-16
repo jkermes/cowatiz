@@ -1,12 +1,29 @@
 angular.module('starter.services.login', ['firebase'])
 .service('LoginService', function($firebaseAuth, $q) {
 	var auth = $firebaseAuth();
+	var deferred = $q.defer();
+	var promise = deferred.promise;
 
 	return {
-		loginUser: function(name, pw) {
-			var deferred = $q.defer();
-			var promise = deferred.promise;
+		register: function(name, pw) {
+			auth.$createUserWithEmailAndPassword(name, pw).then(function(firebaseUser) {
+				deferred.resolve("User " + firebaseUser.email + " created successfully!");
+			}).catch(function(error) {
+				deferred.reject('Sorry, an error occured');
+			});
 
+			promise.success = function(fn) {
+				promise.then(fn);
+				return promise;
+			}
+			promise.error = function(fn) {
+				promise.then(null, fn);
+				return promise;
+			}
+
+			return promise;
+		},
+		loginUser: function(name, pw) {
 			auth.$signInWithEmailAndPassword(name, pw).then(function(firebaseUser) {
 				var user = {
 					uid: firebaseUser.uid,
