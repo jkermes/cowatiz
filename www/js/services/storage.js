@@ -32,11 +32,23 @@ angular.module('starter.services.storage', ['firebase'])
 		},
 
 		uploadUserImage: function (uid, file) {
+			//var userReference = imagesRef.child(uid);
+
+//			var metadata = {
+//				'contentType': 'image/jpeg'
+//			};
+
+
 			var uploadTask = imagesRef.child(uid + ".jpg").put(file);
 
-			uploadTask.on('state_changed', function(snapshot){
+
+			console.log('test');
+			uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot){
+				var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				console.log('Upload is ' + progress + '% done');
 
 			}, function(error) {
+				console.log('test2');
 				deferred.reject(error);
 			}, function() {
 				var downloadURL = uploadTask.snapshot.downloadURL;
