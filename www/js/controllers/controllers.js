@@ -135,7 +135,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         function loadImage() {
             Storage.getUserImage($localStorage.user.uid).success(function (data) {
                 $scope.image = data;
-                console.log("data : ", data);
             });
         }
 
@@ -145,7 +144,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         $ionicPlatform.ready(function () {
             var options = {
                 quality: 50,
-                //destinationType: Camera.DestinationType.FILE_URI,
                 destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: Camera.PictureSourceType.CAMERA,
                 allowEdit: true,
@@ -159,74 +157,38 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 
             $scope.takeImage = function () {
 
-
-                /*$cordovaCamera.getPicture(options).then(
-                    function (data) {
-                        var imageAsBytes = $base64.decode(data);
-
-                        console.log(data);
-
-                        Storage.uploadUserImage($localStorage.user.uid, imageAsBytes).success(function (data) {
-                            console.log('Uploaded');
-                            //console.log(data);
-                        }).error(function (error) {
-                            console.log('Error during file upload: ' + error.message);
-                        });
-
-                        $window.resolveLocalFileSystemURL(imageURI, function (fileEntry)
-                         {
-                         fileEntry.file(function (file)
-                         {
-                         Storage.uploadUserImage($localStorage.user.uid, file)
-                         .then( function ()
-                         {
-                         console.log("Successfully uploaded");
-                         })
-                         .error(function (err)
-                         {
-                         console.log("An error occured : ", err);
-                         })
-                         })
-                         },
-                         function () { console.log("Erreur...") });
-                    }, function (err) {
-                        console.log('An error occured while taking picture.')
-                    });*/
-
-
                 $cordovaCamera.getPicture(options).then(function(uri) {
-                    console.log(uri);
                     var filename = uri.substring(uri.lastIndexOf('/') + 1);
                     var path = uri.split('/');
                     path.pop();
                     path = path.join('/');
-                    
-                    console.log(filename);
-                    console.log(path);
 
                     $cordovaFile.readAsArrayBuffer(path, filename).then(function (result) {
                         var file = result;
-                        //console.log(result);
                         var arrayBuffer = new Uint8Array(file);
 
-                        var blob = new Blob([arrayBuffer], {type: "application/octet-stream"});
+                        var blob = new Blob([arrayBuffer], {type: "image/jpeg"});
 
                         Storage.uploadUserImage($localStorage.user.uid, blob).success(function (data) {
                             console.log('Uploaded');
                             loadImage();
-                            $state.reload();
                         }).error(function (error) {
                             console.log('Error during file upload: ' + error.message);
                         });
+
+                        $cordovaCamera.cleanup(
+                            function () {
+                                console.log('Deleted local image..');
+                            }
+                            ,
+                            function (err) {
+                                console.log('Error cleaning up image..');
+                            });
                     });
                 }, function(error) {
                     console.error(error);
                 });
             }
-
-
-
-
         });
         
 

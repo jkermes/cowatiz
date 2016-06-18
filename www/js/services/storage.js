@@ -3,13 +3,13 @@ angular.module('starter.services.storage', ['firebase'])
 	var storage = firebase.storage();
 	var storageRef = storage.ref();
 
-	var deferred = $q.defer();
-	var promise = deferred.promise;
-
 	var imagesRef = storageRef.child('images/users');
 
 	return {
 		getUserImage: function(uid) {
+
+			var deferred = $q.defer();
+			var promise = deferred.promise;
 
 			var userImageRef = imagesRef.child(uid + ".jpg");
 
@@ -32,12 +32,8 @@ angular.module('starter.services.storage', ['firebase'])
 		},
 
 		uploadUserImage: function (uid, file) {
-			//var userReference = imagesRef.child(uid);
-
-//			var metadata = {
-//				'contentType': 'image/jpeg'
-//			};
-
+			var deferred = $q.defer();
+			var promise = deferred.promise;
 
 			var uploadTask = imagesRef.child(uid + ".jpg").put(file);
 
@@ -48,7 +44,6 @@ angular.module('starter.services.storage', ['firebase'])
 				console.log('Upload is ' + progress + '% done');
 
 			}, function(error) {
-				console.log('test2');
 				deferred.reject(error);
 			}, function() {
 				var downloadURL = uploadTask.snapshot.downloadURL;
