@@ -6,37 +6,69 @@ angular.module('starter.services.storage', ['firebase'])
 	var imagesRef = storageRef.child('images/users');
 
 	return {
-		getUserImage: function(uid) {
 
+		uploadFile: function (path, fileName, blob) {
 			var deferred = Promise.getNewPromise();
 
-			var userImageRef = imagesRef.child(uid + ".jpg");
+			var uploadTask = storageRef
+				.child(path)
+				.child(fileName)
+				.put(blob);
 
-			userImageRef.getDownloadURL().then(function(url) {
-				deferred.resolve(url);
-			}).catch(function(error) {
-  				deferred.reject('An error occured during download url request');
+			uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+				function(snapshot) {
+
+					var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					console.log('Upload is ' + progress + '% done');
+
+			}, 	function(error) {
+
+					deferred.reject(error);
+
+			}, function() {
+
+					deferred.resolve(uploadTask.snapshot.downloadURL);
+
 			});
 
 			return deferred.promise;
 		},
 
-		uploadUserImage: function (uid, file) {
+		getDownloadUrl: function (path, fileName) {
 			var deferred = Promise.getNewPromise();
 
-			var uploadTask = imagesRef.child(uid + ".jpg").put(file);
+			storageRef
+				.child(path)
+				.child(fileName)
+				.getDownloadURL()
+				.then(
+					function (url) {
+						deferred.resolve(url);
+					}
+				).catch(
+					function (error) {
+						deferred.reject(error);
+					}
+				);
 
-			uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot){
-				var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-				console.log('Upload is ' + progress + '% done');
+			return deferred.promise;
+		},
 
-			}, function(error) {
-				deferred.reject(error);
-			}, function() {
-				var downloadURL = uploadTask.snapshot.downloadURL;
+		deleteFile: function (path, fileName) {
+			var deferred = Promise.getNewPromise();
 
-				deferred.resolve(downloadURL);
-			});
+			storageRef
+				.child(path)
+				.child(fileName)
+				.delete()
+				.then(
+					function () {
+						deferred.resolve();
+					}
+				).catch(function (error) {
+						deferred.reject(error);
+					}
+				);
 
 			return deferred.promise;
 		}

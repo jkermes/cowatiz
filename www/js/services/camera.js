@@ -14,7 +14,7 @@ angular.module('starter.services.camera', [])
                 targetHeight: 800,
                 popoverOptions: CameraPopoverOptions,
                 saveToPhotoAlbum: false,
-                correctOrientation: true
+                correctOrientation: false
             };
         });
 

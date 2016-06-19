@@ -1,8 +1,8 @@
 angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutocomplete'])
-    .controller('LoginCtrl', function ($scope, $localStorage, $state, $ionicPopup, LoginService, Users) {
+    .controller('LoginCtrl', function ($scope, $localStorage, $state, $ionicPopup, LoginService, Users, User) {
         $scope.user = {};
 
-        if ($localStorage.user) {
+        if (User.isUserLoggedIn()) {
             redirectToTravel();
         }
 
@@ -10,38 +10,41 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             $state.go('tab.travel');
         }
 
-        function writeUserData(userId, object) {
-            firebase.database().ref('users/' + userId).set(object)
-        }
-
         $scope.login = function () {
-            LoginService.loginUser($scope.user.email, $scope.user.password).success(function (user) {
-                redirectToTravel();
-                $localStorage.user = user;
-
-                if (!Users.$getRecord(user.uid)) {
-                    writeUserData(user.uid, { email: user.email });
-                }
-            }).error(function (data) {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Login failed!',
-                    template: 'Please check your credentials!'
-                });
+            User
+                .login($scope.user.email, $scope.user.password)
+                .success(
+                    function (user) {
+                        redirectToTravel();
+                    }
+                ).error(
+                    function (data) {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Login failed!',
+                            template: 'Please check your credentials!'
+                        }
+                 );
             });
         }
 
         $scope.register = function () {
-            LoginService.register($scope.user.email, $scope.user.password).success(function (data) {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Account created!',
-                    template: 'You can now login'
-                });
-            }).error(function (data) {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Register failed!',
-                    template: data
-                });
-            });
+            User
+                .register($scope.user.email, $scope.user.password)
+                .success(
+                    function () {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Account created!',
+                            template: 'You can now login'
+                        });
+                    }
+                ).error(
+                    function (data) {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Register failed!',
+                            template: data
+                        });
+                    }
+                );
         }
     })
     .controller('TravelCtrl', function ($scope, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
@@ -119,19 +122,27 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         $scope.journey = [];
     })
 
-    .controller('ProfilCtrl', function ($scope, $q, $localStorage, $ionicPlatform, $state, $http, Users, LoginService, Storage, Camera) {
-        $scope.user = Users.$getRecord($localStorage.user.uid);
+    .controller('ProfilCtrl', function ($scope, $ionicPlatform, $state, User, Camera) {
+
+        if (!User.isUserLoggedIn()) {
+            $state.go('login');
+        }
+
+        $scope.user = User.getUser();
 
         $scope.logout = function () {
-            LoginService.logout();
-            $localStorage.user = null;
+            User.logout();
             $state.go('login');
         }
 
         function loadImage() {
-            Storage.getUserImage($localStorage.user.uid).success(function (data) {
-                $scope.image = data;
-            });
+            User
+                .getUserImageUrl()
+                .success(
+                    function (data) {
+                        $scope.image = data;
+                    }
+                );
         }
 
         loadImage();
@@ -141,20 +152,23 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 
             $scope.takeImage = function () {
 
-                Camera.getPictureAsBlob().success(
-                    function (imageBlob) {
-                        Storage.uploadUserImage($localStorage.user.uid, imageBlob).success(function (data) {
-                            console.log('Uploaded');
-                            loadImage();
-                        }).error(function (error) {
-                            console.log('Error during file upload: ' + error.message);
-                        });
-                    }
+                Camera.getPictureAsBlob()
+                    .success(
+                        function (imageBlob) {
+                            User.uploadUserImage(imageBlob)
+                                .success(
+                                    function () {
+                                        loadImage();
+                                    }
+                                ).error(
+                                    function (error) {
+                                        console.log('Error during file upload : ' + error.message);
+                                    }
+                                );
+                        }
                 )
-
             }
         });
-        
 
         $scope.settings = {
             enableFriends: false

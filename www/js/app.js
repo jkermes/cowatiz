@@ -15,7 +15,8 @@ angular.module('starter', ['ionic',
                             'starter.services.login',
                             'starter.services.storage',
                             'starter.services.promise',
-                            'starter.services.camera'
+                            'starter.services.camera',
+                            'starter.services.user'
                             ])
 
 .run(function($ionicPlatform) {
