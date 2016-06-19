@@ -10,7 +10,23 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             $state.go('tab.travel');
         }
 
+        function dump(obj) {
+            var out = '';
+            for (var i in obj) {
+                out += i + ": " + obj[i] + "\n";
+            }
+            console.log(out);
+        }
+
         $scope.login = function () {
+            if (!$scope.user.email || !$scope.user.password) {
+                $ionicPopup.alert({
+                    title: 'Login failed!',
+                    template: 'Please fill the email and password fields.'
+                });
+                return;
+            }
+
             User
                 .login($scope.user.email, $scope.user.password)
                 .success(
@@ -18,16 +34,24 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                         redirectToTravel();
                     }
                 ).error(
-                    function () {
+                    function (error) {
                         $ionicPopup.alert({
                             title: 'Login failed!',
-                            template: 'Please check your credentials!'
+                            template: error.message
                         }
                  );
             });
         }
 
         $scope.register = function () {
+            if (!$scope.user.email || !$scope.user.password) {
+                $ionicPopup.alert({
+                    title: 'Login failed!',
+                    template: 'Please fill the email and password fields.'
+                });
+                return;
+            }
+
             User
                 .register($scope.user.email, $scope.user.password)
                 .success(
@@ -40,7 +64,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                 ).error(
                     function (data) {
                         $ionicPopup.alert({
-                            title: 'Register failed!',
+                            title: 'Registration failed!',
                             template: data
                         });
                     }
