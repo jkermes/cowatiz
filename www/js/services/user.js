@@ -11,6 +11,15 @@ angular.module('starter.services.user', ['firebase'])
 
         var user = null;
 
+        function setUser(firebaseUser) {
+            user = {
+                uid: firebaseUser.uid,
+                email: firebaseUser.email
+            }
+
+            $localStorage.user = user;
+        }
+
         function getUser() {
             if (user != null) {
                 return user;
@@ -59,24 +68,22 @@ angular.module('starter.services.user', ['firebase'])
             login: function(name, pw) {
                 var deferred = Promise.getNewPromise();
 
-                auth
-                    .$signInWithEmailAndPassword(name, pw)
-                    .then(
-                        function(firebaseUser) {
-                            user = {
-                                uid: firebaseUser.uid,
-                                email: firebaseUser.email
+                try {
+                    auth
+                        .$signInWithEmailAndPassword(name, pw)
+                        .then(
+                            function(firebaseUser) {
+                                setUser(firebaseUser);
+                                deferred.resolve(user);
                             }
-
-                            $localStorage.user = user;
-
-                            deferred.resolve(user);
-                        }
-                    ).catch(
+                        ).catch(
                         function(error) {
                             deferred.reject('Wrong credentials');
                         }
                     );
+                } catch (error) {
+                    deferred.reject(error);
+                }
 
                 return deferred.promise;
             },
@@ -99,7 +106,6 @@ angular.module('starter.services.user', ['firebase'])
 
             logout: function() {
                 auth.$signOut();
-                user = null;
                 $localStorage.user = null;
             }
         }

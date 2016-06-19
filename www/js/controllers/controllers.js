@@ -1,5 +1,5 @@
 angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutocomplete'])
-    .controller('LoginCtrl', function ($scope, $localStorage, $state, $ionicPopup, LoginService, Users, User) {
+    .controller('LoginCtrl', function ($scope, $state, $ionicPopup, User) {
         $scope.user = {};
 
         if (User.isUserLoggedIn()) {
@@ -14,12 +14,12 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             User
                 .login($scope.user.email, $scope.user.password)
                 .success(
-                    function (user) {
+                    function () {
                         redirectToTravel();
                     }
                 ).error(
-                    function (data) {
-                        var alertPopup = $ionicPopup.alert({
+                    function () {
+                        $ionicPopup.alert({
                             title: 'Login failed!',
                             template: 'Please check your credentials!'
                         }
@@ -32,14 +32,14 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                 .register($scope.user.email, $scope.user.password)
                 .success(
                     function () {
-                        var alertPopup = $ionicPopup.alert({
+                        $ionicPopup.alert({
                             title: 'Account created!',
                             template: 'You can now login'
                         });
                     }
                 ).error(
                     function (data) {
-                        var alertPopup = $ionicPopup.alert({
+                        $ionicPopup.alert({
                             title: 'Register failed!',
                             template: data
                         });
@@ -50,7 +50,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
     .controller('TravelCtrl', function ($scope, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
 
         $scope.disableTap = function () {
-            container = document.getElementsByClassName('pac-container');
+            var container = document.getElementsByClassName('pac-container');
             // disable ionic data tab
             angular.element(container).attr('data-tap-disabled', 'true');
             // leave input field if google-address-entry is selected
