@@ -197,14 +197,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                     userId: User.getUser().uid
                 });
 
-                console.log({
-                    fromCity: $scope.result.fromCity,
-                    toCity: $scope.result.toCity,
-                    description: $scope.result.description,
-                    date: Date(),
-                    userId: User.getUser().uid
-                });
-
                 $state.go('tab.journeys');
             }
         };
