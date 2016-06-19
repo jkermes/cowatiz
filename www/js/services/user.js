@@ -78,7 +78,7 @@ angular.module('starter.services.user', ['firebase'])
                             }
                         ).catch(
                         function(error) {
-                            deferred.reject('Wrong credentials');
+                            deferred.reject(error);
                         }
                     );
                 } catch (error) {
