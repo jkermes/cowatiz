@@ -5,7 +5,19 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services.models', 'starter.services.login', 'starter.services.storage', 'ionic-datepicker', 'ionic-timepicker'])
+angular.module('starter', ['ionic',
+                            'ngCordova',
+                            'ngStorage',
+                            'ionic-datepicker',
+                            'ionic-timepicker',
+                            'starter.controllers',
+                            'starter.services.models',
+                            'starter.services.login',
+                            'starter.services.storage',
+                            'starter.services.promise',
+                            'starter.services.camera',
+                            'starter.services.user'
+                            ])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

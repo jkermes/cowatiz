@@ -1,32 +1,76 @@
 angular.module('starter.services.storage', ['firebase'])
-.factory('Storage', function($q) {
+.factory('Storage', function($q, Promise) {
 	var storage = firebase.storage();
 	var storageRef = storage.ref();
 
-	var deferred = $q.defer();
-	var promise = deferred.promise;
+	var imagesRef = storageRef.child('images/users');
 
 	return {
-		getUserImage: function() {
-			var imagesRef = storageRef.child('images/users');
-			var userImageRef = imagesRef.child('adam.jpg');
 
-			userImageRef.getDownloadURL().then(function(url) {
-				deferred.resolve(url);
-			}).catch(function(error) {
-  				deferred.reject('An error occured during download url request');
+		uploadFile: function (path, fileName, blob) {
+			var deferred = Promise.getNewPromise();
+
+			var uploadTask = storageRef
+				.child(path)
+				.child(fileName)
+				.put(blob);
+
+			uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+				function(snapshot) {
+
+					var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					console.log('Upload is ' + progress + '% done');
+
+			}, 	function(error) {
+
+					deferred.reject(error);
+
+			}, function() {
+
+					deferred.resolve(uploadTask.snapshot.downloadURL);
+
 			});
 
-			promise.success = function(fn) {
-				promise.then(fn);
-				return promise;
-			}
-			promise.error = function(fn) {
-				promise.then(null, fn);
-				return promise;
-			}
+			return deferred.promise;
+		},
 
-			return promise;
+		getDownloadUrl: function (path, fileName) {
+			var deferred = Promise.getNewPromise();
+
+			storageRef
+				.child(path)
+				.child(fileName)
+				.getDownloadURL()
+				.then(
+					function (url) {
+						deferred.resolve(url);
+					}
+				).catch(
+					function (error) {
+						deferred.reject(error);
+					}
+				);
+
+			return deferred.promise;
+		},
+
+		deleteFile: function (path, fileName) {
+			var deferred = Promise.getNewPromise();
+
+			storageRef
+				.child(path)
+				.child(fileName)
+				.delete()
+				.then(
+					function () {
+						deferred.resolve();
+					}
+				).catch(function (error) {
+						deferred.reject(error);
+					}
+				);
+
+			return deferred.promise;
 		}
 	}
 });
