@@ -1,0 +1,21 @@
+<ion-view view-title="Journeys">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-icon-right" type="item-text-wrap" ng-click="addJourney()">
+      <!-- <ion-item class="item-icon-right" type="item-text-wrap" href="#/tab/addJourney"> -->
+        <h2>New </h2>
+        <i class="icon ion-plus-round"></i>
+      </ion-item>
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="journey in journeys" type="item-text-wrap" href="#/tab/journeys/{{journey.$id}}">
+        <img data-ng-src="{{image}}">
+        <h2><strong>{{journey.fromCity}}</strong> > <strong>{{journey.toCity}}</strong></h2>
+        <h3>{{journey.date}} {{journey.time}}</h3>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="journeys.$remove(journey)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

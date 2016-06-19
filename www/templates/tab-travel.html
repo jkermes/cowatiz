@@ -1,0 +1,30 @@
+<ion-view view-title="Cowatiz">
+	<ion-content class="padding">
+		<div class="marginLeftSearch">
+			<div class="list list-inset">
+				<label class="item item-input">
+					<i class="icon ion-ios-location-outline placeholder-icon"></i>
+					<input type="text" ng-focus="disableTap()" placeholder="Départ" ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options" ng-change="loadResults(result)">
+				</label>
+			</div>
+			<div class="list list-inset">
+				<label class="item item-input">
+					<i class="icon ion-ios-location placeholder-icon"></i>
+					<input type="text" ng-focus="disableTap()" placeholder="Arrivée"  ng-model="result.toCity" ng-autocomplete="resultTo" options="options" ng-change="loadResults(result)">
+				</label>
+			</div>
+			<label class="item item-input">
+				<i class="inlineD icon ion-calendar placeholder-icon"></i>
+				<input ng-model="startDateString" class="inlineD allerret" ng-required="true" type="text" ng-click="openDatePicker()" placeholder="Date">
+			</label>
+			<label class="item item-input">
+				<i class="inlineD icon ion-clock placeholder-icon"></i>
+				<input ng-model="startTimeString" class="inlineD allerret" ng-required="true" type="text" ng-click="openTimePicker()" placeholder="Heure">
+			</label>
+		</div>
+	</div>
+	<button class="button button-block button-positive">
+		Rechercher
+	</button>
+</ion-content>
+</ion-view>
