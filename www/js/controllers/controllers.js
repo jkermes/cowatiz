@@ -10,11 +10,8 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             $state.go('tab.travel');
         }
 
-        function writeUserData(userId, name, email) {
-            firebase.database().ref('users/' + userId).set({
-                username: name,
-                email: email
-            })
+        function writeUserData(userId, object) {
+            firebase.database().ref('users/' + userId).set(object)
         }
 
         $scope.login = function () {
@@ -23,7 +20,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                 $localStorage.user = user;
 
                 if (!Users.$getRecord(user.uid)) {
-                    writeUserData(user.uid, '', user.email);
+                    writeUserData(user.uid, { email: user.email });
                 }
             }).error(function (data) {
                 var alertPopup = $ionicPopup.alert({
@@ -122,8 +119,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         $scope.journey = [];
     })
 
-    .controller('ProfilCtrl', function ($scope, $q, $localStorage, $ionicPlatform, $state, $cordovaCamera,
-                                        $cordovaFile, $http, Users, LoginService, Storage) {
+    .controller('ProfilCtrl', function ($scope, $q, $localStorage, $ionicPlatform, $state, $http, Users, LoginService, Storage, Camera) {
         $scope.user = Users.$getRecord($localStorage.user.uid);
 
         $scope.logout = function () {
@@ -142,52 +138,20 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 
 
         $ionicPlatform.ready(function () {
-            var options = {
-                quality: 50,
-                destinationType: Camera.DestinationType.FILE_URI,
-                sourceType: Camera.PictureSourceType.CAMERA,
-                allowEdit: true,
-                encodingType: Camera.EncodingType.JPEG,
-                targetWidth: 800,
-                targetHeight: 800,
-                popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: false,
-                correctOrientation: true
-            };
 
             $scope.takeImage = function () {
 
-                $cordovaCamera.getPicture(options).then(function(uri) {
-                    var filename = uri.substring(uri.lastIndexOf('/') + 1);
-                    var path = uri.split('/');
-                    path.pop();
-                    path = path.join('/');
-
-                    $cordovaFile.readAsArrayBuffer(path, filename).then(function (result) {
-                        var file = result;
-                        var arrayBuffer = new Uint8Array(file);
-
-                        var blob = new Blob([arrayBuffer], {type: "image/jpeg"});
-
-                        Storage.uploadUserImage($localStorage.user.uid, blob).success(function (data) {
+                Camera.getPictureAsBlob().success(
+                    function (imageBlob) {
+                        Storage.uploadUserImage($localStorage.user.uid, imageBlob).success(function (data) {
                             console.log('Uploaded');
                             loadImage();
                         }).error(function (error) {
                             console.log('Error during file upload: ' + error.message);
                         });
+                    }
+                )
 
-                        $cordovaCamera.cleanup(
-                            function () {
-                                console.log('Deleted local image..');
-                            }
-                            ,
-                            function (err) {
-                                console.log('Error cleaning up image..');
-                            });
-                    });
-                }, function(error) {
-                    console.error(error);
-                });
             }
         });
         

@@ -1,5 +1,5 @@
 angular.module('starter.services.storage', ['firebase'])
-.factory('Storage', function($q) {
+.factory('Storage', function($q, Promise) {
 	var storage = firebase.storage();
 	var storageRef = storage.ref();
 
@@ -8,8 +8,7 @@ angular.module('starter.services.storage', ['firebase'])
 	return {
 		getUserImage: function(uid) {
 
-			var deferred = $q.defer();
-			var promise = deferred.promise;
+			var deferred = Promise.getNewPromise();
 
 			var userImageRef = imagesRef.child(uid + ".jpg");
 
@@ -19,26 +18,14 @@ angular.module('starter.services.storage', ['firebase'])
   				deferred.reject('An error occured during download url request');
 			});
 
-			promise.success = function(fn) {
-				promise.then(fn);
-				return promise;
-			}
-			promise.error = function(fn) {
-				promise.then(null, fn);
-				return promise;
-			}
-
-			return promise;
+			return deferred.promise;
 		},
 
 		uploadUserImage: function (uid, file) {
-			var deferred = $q.defer();
-			var promise = deferred.promise;
+			var deferred = Promise.getNewPromise();
 
 			var uploadTask = imagesRef.child(uid + ".jpg").put(file);
 
-
-			console.log('test');
 			uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot){
 				var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 				console.log('Upload is ' + progress + '% done');
@@ -51,16 +38,7 @@ angular.module('starter.services.storage', ['firebase'])
 				deferred.resolve(downloadURL);
 			});
 
-			promise.success = function(fn) {
-				promise.then(fn);
-				return promise;
-			}
-			promise.error = function(fn) {
-				promise.then(null, fn);
-				return promise;
-			}
-
-			return promise;
+			return deferred.promise;
 		}
 	}
 });

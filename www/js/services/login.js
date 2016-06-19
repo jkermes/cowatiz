@@ -1,11 +1,10 @@
 angular.module('starter.services.login', ['firebase'])
-.service('LoginService', function($firebaseAuth, $q) {
+.service('LoginService', function($firebaseAuth, Promise) {
 	var auth = $firebaseAuth();
 
 	return {
 		register: function(name, pw) {
-			var deferred = $q.defer();
-			var promise = deferred.promise;
+			var deferred = Promise.getNewPromise();
 
 			auth.$createUserWithEmailAndPassword(name, pw).then(function(firebaseUser) {
 				deferred.resolve("User " + firebaseUser.email + " created successfully!");
@@ -13,20 +12,10 @@ angular.module('starter.services.login', ['firebase'])
 				deferred.reject(error.message);
 			});
 
-			promise.success = function(fn) {
-				promise.then(fn);
-				return promise;
-			}
-			promise.error = function(fn) {
-				promise.then(null, fn);
-				return promise;
-			}
-
-			return promise;
+			return deferred.promise;
 		},
 		loginUser: function(name, pw) {
-			var deferred = $q.defer();
-			var promise = deferred.promise;
+			var deferred = Promise.getNewPromise();
 
 			auth.$signInWithEmailAndPassword(name, pw).then(function(firebaseUser) {
 				var user = {
@@ -39,16 +28,7 @@ angular.module('starter.services.login', ['firebase'])
 				deferred.reject('Wrong credentials');
 			});
 
-			promise.success = function(fn) {
-				promise.then(fn);
-				return promise;
-			}
-			promise.error = function(fn) {
-				promise.then(null, fn);
-				return promise;
-			}
-
-			return promise;
+			return deferred.promise;
 		},
 		logout: function() {
 			auth.$signOut();
