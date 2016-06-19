@@ -5,7 +5,7 @@
   <div class="item item-avatar">
     <img ng-src="{{image}}"/>
     <h2>{{user.email}}</h2>
-    <p>November 05, 1955</p>
+    <p ng-click="setBorn()">Naissance : {{ userInfos.born || "Non renseigné" }}</p>
   </div>
 
   <div class="item item-body">

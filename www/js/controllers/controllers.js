@@ -10,14 +10,6 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             $state.go('tab.travel');
         }
 
-        function dump(obj) {
-            var out = '';
-            for (var i in obj) {
-                out += i + ": " + obj[i] + "\n";
-            }
-            console.log(out);
-        }
-
         $scope.login = function () {
             if (!$scope.user.email || !$scope.user.password) {
                 $ionicPopup.alert({
@@ -71,7 +63,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
                 );
         }
     })
-    .controller('TravelCtrl', function ($scope, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
+    .controller('TravelCtrl', function ($scope, $filter, $localStorage, Users, ionicDatePicker, ionicTimePicker) {
 
         $scope.disableTap = function () {
             var container = document.getElementsByClassName('pac-container');
@@ -100,20 +92,16 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             callback: function (val) {
                 var date = new Date(val);
                 $scope.startDate = date;
-                $scope.startDateString =
-                    ("0" + (date.getDate())).slice(-2)
-                    + "/" + ("0" + (date.getMonth() + 1)).slice(-2)
-                    + "/" + date.getFullYear();
+                $scope.startDateString = $filter('date')(date, 'dd/MM/yyyy', '+000');
             }
         };
 
         var tpOptions = {
             callback: function (val) {
                 var date = new Date(val * 1000);
+                console.log(date);
                 $scope.startTime = date;
-                $scope.startTimeString =
-                    ("0" + date.getUTCHours()).slice(-2) + ":"
-                    + ("0" + date.getUTCMinutes()).slice(-2);
+                $scope.startTimeString = $filter('date')(date, 'HH:mm', '+000')
             }
         };
 
@@ -146,17 +134,35 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
         $scope.journey = [];
     })
 
-    .controller('ProfilCtrl', function ($scope, $ionicPlatform, $state, User, Camera) {
+    .controller('ProfilCtrl', function ($scope, $filter, $ionicPlatform, $state, User, Camera, ionicDatePicker) {
 
         if (!User.isUserLoggedIn()) {
             $state.go('login');
         }
+
+        var currentDate = new Date();
+        var dpOptions = {
+            callback: function (val) {
+                var date = new Date(val);
+                date.setDate(date.getDate() + 1);
+                $scope.userInfos.born = $filter('date')(date, 'dd/MM/yyyy', '+000');
+            },
+            from: new Date(currentDate.getFullYear() - 100, currentDate.getMonth(), currentDate.getDate()),
+            to: new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate()),
+            inputDate: new Date(currentDate.getFullYear() - 19, currentDate.getMonth(), currentDate.getDate())
+        };
 
         $scope.user = User.getUser();
 
         $scope.logout = function () {
             User.logout();
             $state.go('login');
+        }
+
+        User.getUserInfos().$bindTo($scope, "userInfos");
+
+        $scope.setBorn = function () {
+            ionicDatePicker.openDatePicker(dpOptions);
         }
 
         function loadImage() {
