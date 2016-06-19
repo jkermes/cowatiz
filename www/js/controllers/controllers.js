@@ -113,25 +113,82 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
             ionicTimePicker.openTimePicker(tpOptions);
         };
     })
-    .controller("JourneysCtrl", function ($scope, $firebaseArray, $localStorage, Journeys) {
+    .controller("JourneysCtrl", function ($scope, $state, $firebaseArray, $localStorage, Journeys) {
         $scope.journeys = Journeys;
 
         $scope.addJourney = function () {
-            var name = prompt("Where do you need to go ?");
-            if (name) {
-                $scope.journeys.$add({
-                    name: name,
-                    lastText: 'You on your way?',
-                    date: Date()
-                });
-            }
+            $state.go('tab.journey-add');
         };
     })
     .controller('JourneyDetailCtrl', function ($scope, $stateParams, Journeys) {
         $scope.journey = Journeys.$getRecord($stateParams.journeyId);
     })
-    .controller('AddJourneyCtrl', function ($scope, $stateParams, Journeys) {
-        $scope.journey = [];
+    .controller('AddJourneyCtrl', function ($scope, $state, $stateParams, Journeys, ionicDatePicker, ionicTimePicker, User) {
+        $scope.journeys = Journeys;
+
+        $scope.disableTap = function () {
+            var container = document.getElementsByClassName('pac-container');
+            // disable ionic data tab
+            angular.element(container).attr('data-tap-disabled', 'true');
+            // leave input field if google-address-entry is selected
+            angular.element(container).on("click", function () {
+                document.getElementById('searchBar').blur();
+            });
+        };
+
+        $scope.result = {
+            description: ''
+        };
+        $scope.options = {
+            country: 'fr',
+            types: '(cities)'
+        };
+
+        var dpOptions = {
+            callback: function (val) {
+                var date = new Date(val);
+                $scope.startDate = date;
+                $scope.startDateString =
+                    ("0" + (date.getDate())).slice(-2)
+                    + "/" + ("0" + (date.getMonth() + 1)).slice(-2)
+                    + "/" + date.getFullYear();
+            }
+        };
+
+        var tpOptions = {
+            callback: function (val) {
+                var date = new Date(val * 1000);
+                $scope.startTime = date;
+                $scope.startTimeString =
+                    ("0" + date.getUTCHours()).slice(-2) + ":"
+                    + ("0" + date.getUTCMinutes()).slice(-2);
+            }
+        };
+
+        $scope.openDatePicker = function () {
+            ionicDatePicker.openDatePicker(dpOptions);
+        };
+
+        $scope.openTimePicker = function () {
+            ionicTimePicker.openTimePicker(tpOptions);
+        };
+
+        $scope.addJourney = function() {
+            if ($scope.result.fromCity && $scope.result.toCity) {
+                $scope.journeys.$add({
+                    fromCity: $scope.result.fromCity,
+                    toCity: $scope.result.toCity,
+                    description: $scope.result.description,
+                    date: $scope.startDateString,
+                    time: $scope.startTimeString,
+                    seats: $scope.result.seats,
+                    userId: User.getUser().uid
+                });
+
+                $state.go('tab.journeys');
+            }
+        };
+
     })
 
     .controller('ProfilCtrl', function ($scope, $filter, $ionicPlatform, $state, User, Camera, ionicDatePicker) {

@@ -1,15 +1,48 @@
 <ion-view view-title="Add a journey">
-  <ion-content class="padding">
-    <form ng-submit="createTask(task)">
-        <div class="list">
-          <label class="item item-input">
-            <input type="text" placeholder="What do you need to do?" ng-model="task.title">
-          </label>
-        </div>
-        <div class="padding">
-          <button type="submit" class="button button-block button-positive">Create Task</button>
-        </div>
-      </form>
-
-  </ion-content>
+    <ion-content class="padding">
+        <form ng-submit="createTask(task)">
+            <div class="list">
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <i class="icon ion-ios-location-outline placeholder-icon"></i>
+                        <input type="text" ng-focus="disableTap()" placeholder="Départ" ng-required="required"
+                               ng-model="result.fromCity" ng-autocomplete="resultFrom" options="options"
+                               ng-change="loadResults(result)">
+                    </label>
+                </div>
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <i class="icon ion-ios-location placeholder-icon"></i>
+                        <input type="text" ng-focus="disableTap()" placeholder="Arrivée" ng-required="required"
+                               ng-model="result.toCity" ng-autocomplete="resultTo" options="options"
+                               ng-change="loadResults(result)">
+                    </label>
+                </div>
+                <label class="item item-input">
+                    <i class="inlineD icon ion-calendar placeholder-icon"></i>
+                    <input ng-model="startDateString" class="inlineD allerret" ng-required="true" type="text"
+                           ng-click="openDatePicker()" placeholder="Date">
+                </label>
+                <label class="item item-input">
+                    <i class="inlineD icon ion-clock placeholder-icon"></i>
+                    <input ng-model="startTimeString" class="inlineD allerret" ng-required="true" type="text"
+                           ng-click="openTimePicker()" placeholder="Heure">
+                </label>
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <span class="input-label">Nb places</span>
+                        <input type="number" ng-model="result.seats" min="1" max="9">
+                    </label>
+                </div>
+                <div class="list list-inset">
+                    <label class="item item-input">
+                        <textarea placeholder="Description" ng-model="task.title"></textarea>
+                    </label>
+                </div>
+            </div>
+            <div class="padding">
+                <button type="submit" class="button button-block button-positive" ng-click="addJourney()">Create Task</button>
+            </div>
+        </form>
+    </ion-content>
 </ion-view>
