@@ -200,7 +200,7 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 
     })
 
-    .controller('ProfilCtrl', function ($scope, $filter, $ionicPlatform, $state, User, Camera, ionicDatePicker) {
+    .controller('ProfilCtrl', function ($scope, $filter, $ionicPlatform, $state, $ionicPopup, User, Camera, ionicDatePicker) {
 
         if (!User.isUserLoggedIn()) {
             $state.go('login');
@@ -248,22 +248,30 @@ angular.module('starter.controllers', ['firebase', 'ionic-datepicker', 'ngAutoco
 
             $scope.takeImage = function () {
 
-                Camera.getPictureAsBlob()
-                    .success(
-                        function (imageBlob) {
-                            User.uploadUserImage(imageBlob)
-                                .success(
-                                    function () {
-                                        loadImage();
-                                    }
-                                ).error(
-                                    function (error) {
-                                        console.log('Error during file upload : ' + error.message);
-                                    }
-                                );
-                        }
-                )
-            }
+                    Camera.getPictureAsBlob()
+                        .success(
+                            function (imageBlob) {
+                                User.uploadUserImage(imageBlob)
+                                    .success(
+                                        function () {
+                                            loadImage();
+                                        }
+                                    ).error(
+                                        function (error) {
+                                            console.log('Error during file upload : ' + error.message);
+                                        }
+                                    );
+                            }
+                        )
+                        .error(
+                            function (err) {
+                                $ionicPopup.alert({
+                                    title: 'Error',
+                                    template: err.message
+                                });
+                            }
+                        )
+            };
         });
 
         $scope.settings = {

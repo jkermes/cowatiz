@@ -4,21 +4,27 @@ angular.module('starter.services.camera', [])
         var OPTIONS;
 
         $ionicPlatform.ready(function () {
-            OPTIONS = {
-                quality: 50,
-                destinationType: Camera.DestinationType.FILE_URI,
-                sourceType: Camera.PictureSourceType.CAMERA,
-                allowEdit: true,
-                encodingType: Camera.EncodingType.JPEG,
-                targetWidth: 800,
-                targetHeight: 800,
-                popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: false,
-                correctOrientation: false
-            };
+            if (isCameraAvailable()) {
+                OPTIONS = {
+                    quality: 50,
+                    destinationType: Camera.DestinationType.FILE_URI,
+                    sourceType: Camera.PictureSourceType.CAMERA,
+                    allowEdit: true,
+                    encodingType: Camera.EncodingType.JPEG,
+                    targetWidth: 800,
+                    targetHeight: 800,
+                    popoverOptions: CameraPopoverOptions,
+                    saveToPhotoAlbum: false,
+                    correctOrientation: false
+                };
+            }
         });
 
         var MIME_IMAGE_JPEG = "image/jpeg";
+
+        function isCameraAvailable() {
+            return typeof Camera != "undefined";
+        }
 
         function getFileName(uri) {
             return uri.substring(uri.lastIndexOf('/') + 1);
@@ -35,6 +41,10 @@ angular.module('starter.services.camera', [])
             getPictureAsBlob : function () {
 
                 var deferred = Promise.getNewPromise();
+
+                if (!isCameraAvailable()) {
+                    deferred.reject({ message: "No camera available."});
+                }
 
                 $cordovaCamera.getPicture(OPTIONS).then(function(uri) {
                     var filename = getFileName(uri);
