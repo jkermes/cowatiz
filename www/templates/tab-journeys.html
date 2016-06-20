@@ -8,7 +8,7 @@
       </ion-item>
       <ion-item class="item-remove-animate item-icon-right" ng-repeat="journey in journeys" type="item-text-wrap" href="#/tab/journeys/{{journey.$id}}">
         <img data-ng-src="{{image}}">
-        <h2>{{journey.fromCity}} > {{journey.toCity}}</h2>
+        <h2><strong>{{journey.fromCity}}</strong> > <strong>{{journey.toCity}}</strong></h2>
         <h3>{{journey.date}} {{journey.time}}</h3>
         <i class="icon ion-chevron-right icon-accessory"></i>
 

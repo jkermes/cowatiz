@@ -2,12 +2,15 @@
  * Created by greg on 19/06/16.
  */
 angular.module('starter.services.user', ['firebase'])
-    .factory('User', function($q, $firebaseAuth, $localStorage, Promise, Storage) {
+    .factory('User', function($q, $firebaseAuth, $firebaseObject, $localStorage, Promise, Storage) {
 
         var USERS_IMAGES_PATH = 'images/users';
         var JPG_EXTENSION = '.jpg';
+        var USER_DB_PATH = 'user';
 
         var auth = $firebaseAuth();
+
+        var userInfos = null;
 
         var user = null;
 
@@ -32,6 +35,23 @@ angular.module('starter.services.user', ['firebase'])
             return user;
         }
 
+        function getUserInfos() {
+            if (!isUserLoggedIn()) {
+                throw new Error('User is not logged in.');
+            }
+
+            if (userInfos == null) {
+                userInfos = $firebaseObject(
+                    firebase
+                        .database()
+                        .ref()
+                        .child(USER_DB_PATH)
+                        .child(user.uid));
+            }
+
+            return userInfos;
+        }
+
         function isUserLoggedIn() {
             return getUser() != null;
         }
@@ -39,6 +59,8 @@ angular.module('starter.services.user', ['firebase'])
         return {
 
             getUser: getUser,
+
+            getUserInfos: getUserInfos,
 
             isUserLoggedIn: isUserLoggedIn,
 
